@@ -37,8 +37,6 @@ public class CouponTemplate {
 
     private String category;
 
-    private Integer productLine;
-
     /** 总数 */
     @Column(name = "coupon_count")
     private Integer count;

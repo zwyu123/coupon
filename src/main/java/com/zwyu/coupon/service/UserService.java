@@ -1,7 +1,12 @@
 package com.zwyu.coupon.service;
 
+import com.zwyu.coupon.constant.CouponStatus;
+import com.zwyu.coupon.dao.CouponDao;
 import com.zwyu.coupon.dao.CouponTemplateDao;
+import com.zwyu.coupon.entity.Coupon;
 import com.zwyu.coupon.entity.CouponTemplate;
+import com.zwyu.coupon.exception.CouponException;
+import com.zwyu.coupon.vo.AcquireTemplateRequest;
 import com.zwyu.coupon.vo.CouponTemplateVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -17,6 +23,8 @@ public class UserService {
 
     @Autowired
     private CouponTemplateDao templateDao;
+    @Autowired
+    private CouponDao couponDao;
 
     /**
      * 查找可以领取的优惠券
@@ -41,6 +49,18 @@ public class UserService {
         return templateVos;
     }
 
+    public void acquireTemplate(AcquireTemplateRequest request) throws CouponException {
+
+        // 获取优惠券模板
+        Optional<CouponTemplate> template = templateDao.findById(request.getTemplateVo().getId());
+        if (!template.isPresent()) {
+            throw new CouponException("Can not Acquire Template");
+        }
+
+        Coupon coupon = new Coupon(request.getTemplateVo().getId(), request.getUserId(), CouponStatus.USABLE.getCode());
+        couponDao.save(coupon);
+    }
+
     private CouponTemplateVo template2TemplateVo(CouponTemplate template) {
         return new CouponTemplateVo(
                 template.getId(),
@@ -48,7 +68,6 @@ public class UserService {
                 template.getLogo(),
                 template.getDesc(),
                 template.getCategory(),
-                template.getProductLine(),
                 template.getKey(),
                 template.getTarget(),
                 template.getRule()

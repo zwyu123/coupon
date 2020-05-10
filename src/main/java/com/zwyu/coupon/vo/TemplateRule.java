@@ -27,7 +27,7 @@ public class TemplateRule {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    public class Expiration {
+    public static class Expiration {
 
         /** 有效期规则 */
         private Integer period;

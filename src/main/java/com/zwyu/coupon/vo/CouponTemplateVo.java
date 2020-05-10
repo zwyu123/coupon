@@ -21,8 +21,6 @@ public class CouponTemplateVo {
 
     private String category;
 
-    private Integer productLine;
-
     /** 优惠券模板的编码 **/
     private String key;
 
